@@ -1,0 +1,21 @@
+{% extends 'tips/layout.html' %}
+
+{% block content %}
+
+            <div class='row'>
+                <h2 class = "center-align green lighten-3">{{title}}</h2>  
+                <ul class="collection">
+                    {% for tip in tips %}
+                    <li class="collection-item"><a href="/tips/details/{{tip.id}}">{{tip.title}}</a></li> 
+                    {% endfor %}
+                </ul>
+            </div>
+            
+
+
+
+
+        
+ 
+
+{% endblock %}

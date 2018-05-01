@@ -1,0 +1,133 @@
+{% extends 'tips/layout.html' %}
+
+{% block content %}
+
+    <div class='row'>
+        <h2 class = "center-align green lighten-3">{{tip.title}}</h2>  
+        <div class="card">
+            {{tip.body}}
+        </div>
+        <div>
+            {{tip.created_at}}
+        </div>
+        <div>{% if tip.hoursFile %}
+            <p>File Uploaded! </p>
+            <p>{{tip.hoursFile}}</p>
+            <!-- <img src="{{tip.hoursFile.url}}"> -->
+            {% endif %}
+        </div>
+    </div>
+    <div class='row'>
+                <table class="table table-bordered responsive-table">
+                  <thead>
+                    <tr>
+                        <th rowspan="1">Claddagh</th>
+                        <th id="M" colspan="4">Monday (Date)</th>
+                        <th id="T" colspan="4">Tuesday (Date)</th>
+                        <th id="W" colspan="4">Wednesday (Date)</th>
+                        <th id="Th" colspan="4">Thursday (Date)</th>
+                        <th id="F" colspan="4">Friday (Date)</th>
+                        <th id="Sa" colspan="4">Saturday (Date)</th>
+                        <th id="Su" colspan="4">Sunday (Date)</th>
+                    </tr>
+                    <tr>
+                        <th>Employee</th>
+                        <th>Hours</th>
+                        <th>Cash Tips</th>
+                        <th>Credit Card Tips</th>
+                        <th>Total Tips</th>
+                        <th>Hours</th>
+                        <th>Cash Tips</th>
+                        <th>Credit Card Tips</th>
+                        <th>Total Tips</th>
+                        <th>Hours</th>
+                        <th>Cash Tips</th>
+                        <th>Credit Card Tips</th>
+                        <th>Total Tips</th>
+                        <th>Hours</th>
+                        <th>Cash Tips</th>
+                        <th>Credit Card Tips</th>
+                        <th>Total Tips</th>
+                        <th>Hours</th>
+                        <th>Cash Tips</th>
+                        <th>Credit Card Tips</th>
+                        <th>Total Tips</th>
+                        <th>Hours</th>
+                        <th>Cash Tips</th>
+                        <th>Credit Card Tips</th>
+                        <th>Total Tips</th>
+                        <th>Hours</th>
+                        <th>Cash Tips</th>
+                        <th>Credit Card Tips</th>
+                        <th>Total Tips</th>
+                        <th>Hours</th>
+                        <th>Cash Tips</th>
+                        <th>Credit Card Tips</th>
+                        <th>Total Tips</th>
+                    </tr>
+                </thead>
+                  <tbody>
+                    <tr>
+                      <td id="name"></td>
+                      <td id="clad-mon-hours"></td>
+                      <td id="clad-mon-cash-tips">{{tip.wee_Mon_Cash_Tips}}</td>
+                      <td id="clad-mon-cred-tips"></td>
+                      <td id="clad-mon-total-tips"></td>
+                      <td id="clad-tues-hours"></td>
+                      <td id="clad-tues-cash-tips"></td>
+                      <td id="clad-tues-cred-tips"></td>
+                      <td id="clad-tues-total-tips"></td>
+                      <td id="clad-weds-hours"></td>
+                      <td id="clad-weds-cash-tips"></td>
+                      <td id="clad-weds-cred-tips"></td>
+                      <td id="clad-weds-total-tips"></td>
+                      <td id="clad-thu-hours"></td>
+                      <td id="clad-thu-cash-tips"></td>
+                      <td id="clad-thu-cred-tips"></td>
+                      <td id="clad-thu-total-tips"></td>
+                      <td id="clad-fri-hours"></td>
+                      <td id="clad-fri-cash-tips"></td>
+                      <td id="clad-fri-cred-tips"></td>
+                      <td id="clad-fri-total-tips"></td>
+                      <td id="clad-sat-hours"></td>
+                      <td id="clad-sat-cash-tips"></td>
+                      <td id="clad-sat-cred-tips"></td>
+                      <td id="clad-sat-total-tips"></td>
+                    </tr>
+                    
+                  </tbody>
+                </table>
+            </div>
+            <hr>
+            <div class='row'>
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Firstname</th>
+                      <th>Lastname</th>
+                      <th>Email</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>John</td>
+                      <td>Doe</td>
+                      <td>john@example.com</td>
+                    </tr>
+                    <tr>
+                      <td>Mary</td>
+                      <td>Moe</td>
+                      <td>mary@example.com</td>
+                    </tr>
+                    <tr>
+                      <td>July</td>
+                      <td>Dooley</td>
+                      <td>july@example.com</td>
+                    </tr>
+                  </tbody>
+                </table>
+            </div>
+          </div>
+    <a href="/tips" class="btn">Go Back</a>
+
+{% endblock %}
