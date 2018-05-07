@@ -2,11 +2,10 @@
 
 {% block content %}
 
+
     <div class='row'>
         <h2 class = "center-align green lighten-3">{{tip.title}}</h2>  
-        <div class="card">
-            {{tip.body}}
-        </div>
+        
         <div>
             {{tip.created_at}}
         </div>
@@ -18,116 +17,1266 @@
         </div>
     </div>
     <div class='row'>
-                <table class="table table-bordered responsive-table">
-                  <thead>
-                    <tr>
-                        <th rowspan="1">Claddagh</th>
-                        <th id="M" colspan="4">Monday (Date)</th>
-                        <th id="T" colspan="4">Tuesday (Date)</th>
-                        <th id="W" colspan="4">Wednesday (Date)</th>
-                        <th id="Th" colspan="4">Thursday (Date)</th>
-                        <th id="F" colspan="4">Friday (Date)</th>
-                        <th id="Sa" colspan="4">Saturday (Date)</th>
-                        <th id="Su" colspan="4">Sunday (Date)</th>
-                    </tr>
-                    <tr>
-                        <th>Employee</th>
-                        <th>Hours</th>
-                        <th>Cash Tips</th>
-                        <th>Credit Card Tips</th>
-                        <th>Total Tips</th>
-                        <th>Hours</th>
-                        <th>Cash Tips</th>
-                        <th>Credit Card Tips</th>
-                        <th>Total Tips</th>
-                        <th>Hours</th>
-                        <th>Cash Tips</th>
-                        <th>Credit Card Tips</th>
-                        <th>Total Tips</th>
-                        <th>Hours</th>
-                        <th>Cash Tips</th>
-                        <th>Credit Card Tips</th>
-                        <th>Total Tips</th>
-                        <th>Hours</th>
-                        <th>Cash Tips</th>
-                        <th>Credit Card Tips</th>
-                        <th>Total Tips</th>
-                        <th>Hours</th>
-                        <th>Cash Tips</th>
-                        <th>Credit Card Tips</th>
-                        <th>Total Tips</th>
-                        <th>Hours</th>
-                        <th>Cash Tips</th>
-                        <th>Credit Card Tips</th>
-                        <th>Total Tips</th>
-                        <th>Hours</th>
-                        <th>Cash Tips</th>
-                        <th>Credit Card Tips</th>
-                        <th>Total Tips</th>
-                    </tr>
-                </thead>
-                  <tbody>
-                    <tr>
-                      <td id="name"></td>
-                      <td id="clad-mon-hours"></td>
-                      <td id="clad-mon-cash-tips">{{tip.wee_Mon_Cash_Tips}}</td>
-                      <td id="clad-mon-cred-tips"></td>
-                      <td id="clad-mon-total-tips"></td>
-                      <td id="clad-tues-hours"></td>
-                      <td id="clad-tues-cash-tips"></td>
-                      <td id="clad-tues-cred-tips"></td>
-                      <td id="clad-tues-total-tips"></td>
-                      <td id="clad-weds-hours"></td>
-                      <td id="clad-weds-cash-tips"></td>
-                      <td id="clad-weds-cred-tips"></td>
-                      <td id="clad-weds-total-tips"></td>
-                      <td id="clad-thu-hours"></td>
-                      <td id="clad-thu-cash-tips"></td>
-                      <td id="clad-thu-cred-tips"></td>
-                      <td id="clad-thu-total-tips"></td>
-                      <td id="clad-fri-hours"></td>
-                      <td id="clad-fri-cash-tips"></td>
-                      <td id="clad-fri-cred-tips"></td>
-                      <td id="clad-fri-total-tips"></td>
-                      <td id="clad-sat-hours"></td>
-                      <td id="clad-sat-cash-tips"></td>
-                      <td id="clad-sat-cred-tips"></td>
-                      <td id="clad-sat-total-tips"></td>
-                    </tr>
-                    
-                  </tbody>
-                </table>
-            </div>
-            <hr>
-            <div class='row'>
-                <table class="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>Firstname</th>
-                      <th>Lastname</th>
-                      <th>Email</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>John</td>
-                      <td>Doe</td>
-                      <td>john@example.com</td>
-                    </tr>
-                    <tr>
-                      <td>Mary</td>
-                      <td>Moe</td>
-                      <td>mary@example.com</td>
-                    </tr>
-                    <tr>
-                      <td>July</td>
-                      <td>Dooley</td>
-                      <td>july@example.com</td>
-                    </tr>
-                  </tbody>
-                </table>
+		<table id="example" class="table table-striped table-bordered display">
+			<thead>
+				<tr>
+					<th colspan=2>Column 1</th>
+					
+				</tr>
+				
+			</thead>
+			
+		</table>
+      {% comment %} <table id='example' class="display" style="width:100%" >
+				<thead>
+					<tr>
+						<th>Claddagh</th>
+						<th colspan=4>Sunday</th>						
+						<th colspan=4>Monday</th>
+						<th colspan=4>Tuesday</th>
+						<th colspan=4>Wednesday</th>
+						<th colspan=4>Thursday</th>
+						<th colspan=4>Friday</th>
+						<th colspan=4>Saturday</th>
+						<th colspan=4>Totals for the Week</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Employee</td>
+						<td>Hours</td>
+						<td>Cash tips</td>
+						<td>Credit card tips</td>
+						<td>Total tips</td>
+						<td>Hours</td>
+						<td>Cash tips</td>
+						<td>Credit card tips</td>
+						<td>Total tips</td>
+						<td>Hours</td>
+						<td>Cash tips</td>
+						<td>Credit card tips</td>
+						<td>Total tips</td>
+						<td>Hours</td>
+						<td>Cash tips</td>
+						<td>Credit card tips</td>
+						<td>Total tips</td>
+						<td>Hours</td>
+						<td>Cash tips</td>
+						<td>Credit card tips</td>
+						<td>Total tips</td>
+						<td>Hours</td>
+						<td>Cash tips</td>
+						<td>Credit card tips</td>
+						<td>Total tips</td>
+						<td>Hours</td>
+						<td>Cash tips</td>
+						<td>Credit card tips</td>
+						<td>Total tips</td>
+						<td>Hours</td>
+						<td>Cash tips</td>
+						<td>Credit card tips</td>
+						<td>Total tips</td>
+					</tr>
+					{% for employee in employees %}
+					<tr>
+						<td>{{employee.first_name}}, {{employee.last_name}}</td>
+						<td>2</td>
+						<td>3</td>
+						<td>4</td>
+						<td>5</td>
+						<td>6</td>
+						<td>7</td>
+						<td>8</td>
+						<td>9</td>
+						<td>10</td>
+						<td>11</td>
+						<td>12</td>
+						<td>13</td>
+						<td>14</td>
+						<td>15</td>
+						<td>16</td>
+						<td>17</td>
+						<td>18</td>
+						<td>19</td>
+						<td>20</td>
+						<td>21</td>
+						<td>22</td>
+						<td>23</td>
+						<td>24</td>
+						<td>25</td>
+						<td>26</td>
+						<td>27</td>
+						<td>28</td>
+						<td>29</td>
+						<td>30</td>
+						<td>31</td>
+						<td>32</td>
+						<td>33</td>
+					</tr> 
+					{% endfor %}
+					<tr>
+						<td>Total</td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Cash tips</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td> $	-   </td>
+					</tr>
+					<tr>
+						<td>Credit card tips</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td> $	-   </td>
+					</tr>
+					<tr>
+						<td>Total tips</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td> $	-   </td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td> $	-   </td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td> $	-   </td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td> $	-   </td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td> $	-   </td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td> $	-   </td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td> $	-   </td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td> $	-   </td>
+					</tr>
+					<tr>
+						<td>Total hours</td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Cash tips/hour</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Credit card tips/hour</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Total tips/hour</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Wee</td>
+						<td>Sunday</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>Monday</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>Tuesday</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>Wednesday</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>Thursday</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>Friday</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>Saturday</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>Totals for the Week</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Employee</td>
+						<td>Hours</td>
+						<td>Cash tips</td>
+						<td>Credit card tips</td>
+						<td>Total tips</td>
+						<td>Hours</td>
+						<td>Cash tips</td>
+						<td>Credit card tips</td>
+						<td>Total tips</td>
+						<td>Hours</td>
+						<td>Cash tips</td>
+						<td>Credit card tips</td>
+						<td>Total tips</td>
+						<td>Hours</td>
+						<td>Cash tips</td>
+						<td>Credit card tips</td>
+						<td>Total tips</td>
+						<td>Hours</td>
+						<td>Cash tips</td>
+						<td>Credit card tips</td>
+						<td>Total tips</td>
+						<td>Hours</td>
+						<td>Cash tips</td>
+						<td>Credit card tips</td>
+						<td>Total tips</td>
+						<td>Hours</td>
+						<td>Cash tips</td>
+						<td>Credit card tips</td>
+						<td>Total tips</td>
+						<td>Hours</td>
+						<td>Cash tips</td>
+						<td>Credit card tips</td>
+						<td>Total tips</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Total</td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Cash tips</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td> $	-   </td>
+					</tr>
+					<tr>
+						<td>Credit card tips</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td> $	-   </td>
+					</tr>
+					<tr>
+						<td>Total tips</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td> $	-   </td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td> $	-   </td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td> $	-   </td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td> $	-   </td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td> $	-   </td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td> $	-   </td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td> $	-   </td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td> $	-   </td>
+					</tr>
+					<tr>
+						<td>Total hours</td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td>0</td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Cash tips/hour</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Credit card tips/hour</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>Total tips/hour</td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table> {% endcomment %}
             </div>
           </div>
-    <a href="/tips" class="btn">Go Back</a>
+	<a href="/tips" class="btn" >Go Back</a>
+	
+	<script>
+		var emplo = "{{% for employee in employees %}}";
+	</script>
 
 {% endblock %}
