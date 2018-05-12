@@ -6,6 +6,7 @@ from .models import Location
 from .models import Day
 from .models import Shift
 from django.db.models import Q
+from django.db.models import Count, Sum, Avg
 from fileinput import filename
 from decimal import Decimal
 import csv
@@ -74,67 +75,43 @@ def getEmployeeFileNames(indices, records):
 
 #  Change start month/endmonth to be a list of months to check for - if want to scale...
 # throws exception
-def parseEmployeeFiles(employeeFiles, startMonth, endMonth, weeDays, west7Days ):
-        for fileName in employeeFiles:
-            try:
-                with open(fileName, newline='') as employeeFile:
-                    filereader = csv.reader(employeeFile, delimiter=',', quotechar='"')
-                    rows = list(filereader)
-                    name = rows[0][0].split(', ')
-                    employee, created = Employee.objects.get_or_create(first_name = name[1], last_name = name[0])
-                    # print(employee)
-                    print(weeDays)
-                    # print(west7Days)
-                    for row in rows:
-                        if row[0].startswith(startMonth) or row[0].startswith(endMonth):
-                            # print(row)
-                            shiftDate = datetime.strptime(row[0] +', 2018', '%b %d, %Y').date()
-                            if row[2] == 'Wee Claddagh':
-                                shiftDay = next(day for day in weeDays if day.date == shiftDate)
-                            else:
-                                # shiftDay = next(lambda day: day.date == shiftDate, west7Days)
-                                shiftDay = next(day for day in west7Days if day.date == shiftDate)
-                            
-                            shift = Shift.objects.get_or_create(employee_id=employee, day_id = shiftDay, times=row[1], role=row[3], hours=Decimal(row[5]))
-                    
-                    
-        #             if (s.hasNextLine()) {
-        #                 String[] firstLineWords = s.nextLine().split(DELIM, -1);
-        #                 employee.setName(firstLineWords[0] + "," + firstLineWords[1]);
-        #             }
-        #             String line;
-        #             String[] words;
-        #             List<Shift> shifts = new ArrayList<>();
-        #             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d yyyy");
-        #             while(s.hasNext()) {
-        #                 line = s.nextLine();
-        # //                System.out.println(line);
-        #                 words = line.split(DELIM, -1);
-        #                 if (words[0].startsWith(startMonth) || words[0].startsWith(endMonth) ) {
-        #                     Shift shift = new Shift();
-        #                     LocalDate date = LocalDate.parse(words[0] + " 2018", formatter);
-        #                     shift.setDate(date);
-        #                     shift.setTimes(words[1]);
-        #                     shift.setLocation(words[2]);
-        #                     shift.setRole(words[3]);
-        #                     shift.setHours(new BigDecimal(words[5]).setScale(2, RoundingMode.HALF_UP));
-                            
-        #                     shifts.add(shift);
-                            
-                            
-                                    
-        #                 }
-        #             }
-        #             employee.setShifts(shifts);
-        #             employees.put(employee.getName(), employee);
-        #             s.close();
-            except FileNotFoundError:
-                raise TPDaoPersistenceException("Could not find file for date entered.", ex)
-        return
-            
+def parseEmployeeFiles(employeeFiles, startMonth, endMonth, weeDays, west7Days, wee, west7, tip):
+    # {tip.id: {wee.id:   , west7.id:  }}
+    for fileName in employeeFiles:
+        try:
+            with open(fileName, newline='') as employeeFile:
+                filereader = csv.reader(employeeFile, delimiter=',', quotechar='"')
+                rows = list(filereader)
+                name = rows[0][0].split(', ')
+                employee, created = Employee.objects.get_or_create(first_name = name[1], last_name = name[0])
 
-def parseHoursFile(filepath, wee, west7):
-    
+                for row in rows:
+                    if row[0].startswith(startMonth) or row[0].startswith(endMonth):
+                        # print(row)
+                        shiftDate = datetime.strptime(row[0] +', 2018', '%b %d, %Y').date()
+                        if row[2] == 'Wee Claddagh':
+                            if employee not in wee.employees.all():
+                                wee.employees.add(employee)
+                            shiftDay = next(day for day in weeDays if day.date == shiftDate)
+                        else:
+                            # shiftDay = next(lambda day: day.date == shiftDate, west7Days)
+                            if employee not in west7.employees.all():
+                                west7.employees.add(employee)
+                            shiftDay = next(day for day in west7Days if day.date == shiftDate)
+                            
+                        
+                        shift = Shift.objects.get_or_create(employee=employee, day = shiftDay, times=row[1], role=row[3], hours=Decimal(row[5]))
+
+    #             employee.setShifts(shifts);
+    #             employees.put(employee.getName(), employee);
+    #             s.close();
+        except FileNotFoundError:
+            raise TPDaoPersistenceException("Could not find file for date entered.", ex)
+    return
+  
+
+def parseHoursFile(tip, wee, west7):
+    filepath = tip.hours_file.url[1:]
     with open(filepath, newline='') as csvfile:
         filereader = csv.reader(csvfile, delimiter=',', quotechar='"')
         rows = list(filereader)
@@ -148,47 +125,39 @@ def parseHoursFile(filepath, wee, west7):
         # print(strStartDate)
         # print(endDate)
         weeDays = findAllDays(startDate, endDate, wee)
+        for day in weeDays:
+            if day.week_day == 'Sunday':
+                day, created = Day.objects.update_or_create(date = day.date, week_day='Sunday', location=wee, location__tips__id = tip.id,
+                defaults={'cash_tips': tip.wee_sunday_cash_tips, 'cred_tips': tip.wee_sunday_cred_tips},
+                )
+            elif day.week_day == 'Monday':
+                day, created = Day.objects.update_or_create(date = day.date, week_day='Monday', location=wee, location__tips__id = tip.id,
+                defaults={'cash_tips': tip.wee_monday_cash_tips, 'cred_tips': tip.wee_monday_cred_tips}
+                )
+                
+            # elif day.week_day = 'Tuesday':
+            #     day, created = Day.objects.update_or_create(date = day.date, week_day='Tuesday', location_id__tip_id=tip,
+            #     defaults={'cash_tips': tip.wee_tuesday_cash_tips, 'cred_tips': tip.wee_tuesday_cred_tips},
+            #     )
         west7Days = findAllDays(startDate, endDate, west7)
+        for day in west7Days:
+            if day.week_day == 'Monday':
+                day, created = Day.objects.update_or_create(date = day.date, week_day='Monday', location=west7, location__tips__id = tip.id,
+                defaults={'cash_tips': tip.west7_monday_cash_tips, 'cred_tips': tip.west7_monday_cred_tips}
+                )
+                
+        days = {'weeDays': weeDays, 'west7Days': west7Days}
         startMonth = (startDate.strftime('%b'))
         endMonth = (endDate.strftime('%b'))
 
         startOfEmployeeBlockIndices = findIndicesForEmployeeBlocks(rows)
-        # print(startOfEmployeeBlockIndices)
         employeeFiles = getEmployeeFileNames(startOfEmployeeBlockIndices, rows)
         # print(employeeFiles)
 
-        parseEmployeeFiles(employeeFiles, startMonth, endMonth, weeDays, west7Days)
+        parseEmployeeFiles(employeeFiles, startMonth, endMonth, weeDays, west7Days, wee, west7, tip)
 
-    # for row in filereader:
-    #     print(', '.join(row))
 
-# final CSVReader csvReader = new CSVReader(new FileReader(hoursFile));
-#         final List<String[]> records = csvReader.readAll();
-        
-#         String[] dateRange = records.get(1)[0].split(" - ");
-
-#         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d, yyyy");
-#         DateTimeFormatter monthAbbreviation = DateTimeFormatter.ofPattern("MMM");
-
-        
-
-#         LocalDate startDate = LocalDate.parse(strStartDate, formatter);
-#         LocalDate endDate = LocalDate.parse(strEndDate, formatter);
-        
-
-#         String startMonth = monthAbbreviation.format(startDate);
-#         String endMonth = monthAbbreviation.format(endDate);
-
-        
-#         fillDaysMap(startDate, endDate);
-        
-# //        List<Shift> fillShiftsList(records, startMonth, endMonth);
-        
-#         List<Integer> startOfEmployeeBlockIndices = findIndicesForEmployeeBlocks(records);
-        
-#         List<String> employeeFiles = getEmployeeFileNames(startOfEmployeeBlockIndices, records);
-        
-#         parseEmployeeFiles(employeeFiles, startMonth, endMonth);
+    return days
         
 #         printEmployeeShifts();
   
@@ -202,10 +171,7 @@ def parseHoursFile(filepath, wee, west7):
 #             startDate = startDate.plusDays(1);
 #         }
 #     }
-    
-#     
-    
-#     
+
     
 #     private static void printEmployeeShifts() {
 #         for (Employee e : employees.values()) {
@@ -231,52 +197,7 @@ def parseHoursFile(filepath, wee, west7):
 #         }
 #     }
     
-# // Change start month/endmonth to be a list of months to check for - if want to scale...
-#     private static void parseEmployeeFiles(List<String> employeeFiles, String startMonth, String endMonth) throws TPDaoPersistenceException {
-#         for (String fileName : employeeFiles) {
-#             Scanner s;
-#             try {
-#                 s = new Scanner(new File(fileName));
-#             } catch (FileNotFoundException ex) {
-#                 throw new TPDaoPersistenceException("Could not find file for date entered.", ex);
-#             }
-#             Employee employee = new Employee();
-#             if (s.hasNextLine()) {
-#                 String[] firstLineWords = s.nextLine().split(DELIM, -1);
-#                 employee.setName(firstLineWords[0] + "," + firstLineWords[1]);
-#             }
-#             String line;
-#             String[] words;
-#             List<Shift> shifts = new ArrayList<>();
-#             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d yyyy");
-#             while(s.hasNext()) {
-#                 line = s.nextLine();
-# //                System.out.println(line);
-#                 words = line.split(DELIM, -1);
-#                 if (words[0].startsWith(startMonth) || words[0].startsWith(endMonth) ) {
-#                     Shift shift = new Shift();
-#                     LocalDate date = LocalDate.parse(words[0] + " 2018", formatter);
-#                     shift.setDate(date);
-#                     shift.setTimes(words[1]);
-#                     shift.setLocation(words[2]);
-#                     shift.setRole(words[3]);
-#                     shift.setHours(new BigDecimal(words[5]).setScale(2, RoundingMode.HALF_UP));
-                    
-#                     shifts.add(shift);
-                    
-                    
-                            
-#                 }
-#             }
-#             employee.setShifts(shifts);
-#             employees.put(employee.getName(), employee);
-#             s.close();
-#         }
-#     }
-    
-    
-    
-#     private static String 
+
     
 #     private static List<Shift> fillShiftsList(List<String[]> records, String startMonth, String endMonth) throws TPDaoPersistenceException {
 # //            List<String[]> realRecords = records.subList(start, end);
@@ -310,6 +231,43 @@ def parseHoursFile(filepath, wee, west7):
 #         return shifts;
 #     }
 
+class EmployeeWeekShift:
+    """ EmployeeWeekShift class represents employee data for a week(name, hours for each day, tips for each day, total hours, total tips) """
+    def __init__(self):
+        name = ""
+        mon_hours = 0
+        mon_cash_tips = 0
+        mon_cred_tips = 0
+        mon_total_tips = 0
+        tues_hours = 0
+        tues_cash_tips = 0
+        tues_cred_tips = 0
+        tues_total_tips = 0
+        weds_hours = 0
+        weds_cash_tips = 0
+        weds_cred_tips = 0
+        weds_total_tips = 0
+        thurs_hours = 0
+        thurs_cash_tips = 0
+        thurs_cred_tips = 0
+        thurs_total_tips = 0
+        fri_hours = 0
+        fri_cash_tips = 0
+        fri_cred_tips = 0
+        fri_total_tips = 0
+        sat_hours = 0
+        sat_cash_tips = 0
+        sat_cred_tips = 0
+        sat_total_tips = 0
+        sun_hours = 0
+        sun_cash_tips = 0
+        sun_cred_tips = 0
+        sun_total_tips = 0
+        total_hours = 0
+        total_cash_tips = 0
+        total_cred_tips = 0
+        
+        
 
 def details(request, id):
     tip = Tip.objects.get(id=id)
@@ -317,31 +275,52 @@ def details(request, id):
     west7, west7created = Location.objects.get_or_create(location='Claddagh Coffee')
     tip.location_set.add(wee, west7)
     locations = tip.location_set.all()
-    parseHoursFile(tip.hours_file.url[1:], wee, west7)
-    # Shift.objects.all().delete()
-    employees = Employee.objects.all()
-    for e in employees:
-        if e.first_name=='Ben' and e.last_name=='Villano':
-            print(e.first_name)
-            shifts = e.shift_set.filter(day_id__week_day='Sunday').filter(Q(role='Barista/Server') | Q(role='Bakery'))
-            for shift in shifts:
-                print(shift.day_id.week_day)
-                print(shift.day_id.location_id.location)
-                print(shift.hours)
-                print(shift.day_id.date)
-        else:
-            print(e.first_name)
-            shifts = e.shift_set.filter(day_id__week_day='Sunday').filter(role='Barista/Server')
-            for shift in shifts:
-                print(shift.day_id.week_day)
-                print(shift.day_id.location_id.location)
-                print(shift.hours)
-                print(shift.day_id.date)
-
+    # allDays = Day.objects.all()
+    # allDays = allDays.annotate(total_hours)
+    days = parseHoursFile(tip, wee, west7)
+    weeDays = days['weeDays']
+    # weeDays = weeDays.annotate(total_hours=Sum('shift__hours'))
+    weeMon = next(day for day in weeDays if day.week_day == 'Monday')
+    # print(weeMon.total_hours)
+    weeTue = next(day for day in weeDays if day.week_day == 'Tuesday')
+    weeWed = next(day for day in weeDays if day.week_day == 'Wednesday')
+    weeThu = next(day for day in weeDays if day.week_day == 'Thursday')
+    weeFri = next(day for day in weeDays if day.week_day == 'Friday')
+    weeSat = next(day for day in weeDays if day.week_day == 'Saturday')
+    weeSun = next(day for day in weeDays if day.week_day == 'Sunday')
+    west7Days = days['west7Days']
+    west7Mon = next(day for day in west7Days if day.week_day == 'Monday')
+    west7Tue = next(day for day in west7Days if day.week_day == 'Tuesday')
+    west7Wed = next(day for day in west7Days if day.week_day == 'Wednesday')
+    west7Thu = next(day for day in west7Days if day.week_day == 'Thursday')
+    west7Fri = next(day for day in west7Days if day.week_day == 'Friday')
+    west7Sat = next(day for day in west7Days if day.week_day == 'Saturday')
+    west7Sun = next(day for day in west7Days if day.week_day == 'Sunday')
+    weeEmployees = locations[0].employees.all()
+    west7Employees = locations[1].employees.all()
+    # Shift.objects.filter(day__location__tips__id = id)
+	# 						shifts = e.shift_set.filter(day__week_day= weekDay ).filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery') ).filter(day__location__location= location )
     context = {
         'tip': tip,
-        'employees': employees,
-        'locations': locations
+        'weeEmployees': weeEmployees,
+        'west7Employees': west7Employees,
+        'locations': locations,
+        'weeDays': weeDays,
+        'west7Days': west7Days,
+        'weeMon' : weeMon,
+        'weeTue' : weeTue,
+        'weeWed' : weeWed,
+        'weeThu' : weeThu,
+        'weeFri' : weeFri,
+        'weeSat' : weeSat,
+        'weeSun' : weeSun,
+        'west7Mon' : west7Mon,
+        'west7Tue' : west7Tue,
+        'west7Wed' : west7Wed,
+        'west7Thu' : west7Thu,
+        'west7Fri' : west7Fri,
+        'west7Sat' : west7Sat,
+        'west7Sun' : west7Sun
     }
     return render(request, 'tips/details.html', context)
 
