@@ -32,10 +32,11 @@ class TPDaoPersistenceException(IOError):
     def __init__(self, arg):
         self.args = arg
 
-def findAllDays(startDate, endDate, location):
+def findAllDays(startDate, endDate, location, tip):
         days = []
+
         while startDate <= endDate:
-            day, created = Day.objects.get_or_create(location_id = location, date=startDate, week_day=startDate.strftime("%A"))
+            day, created = Day.objects.get_or_create(location = location, date=startDate, week_day=startDate.strftime("%A"), location__tips__id = tip.id, cash_tips = tip.getCashTips(location.location, startDate.strftime("%A")), cred_tips = tip.getCredTips(location.location, startDate.strftime("%A")))
             days.append(day)
             startDate = startDate + timedelta(days=1)
         return days
@@ -124,27 +125,27 @@ def parseHoursFile(tip, wee, west7):
         endDate = datetime.strptime(strEndDate, '%b %d, %Y').date()
         # print(strStartDate)
         # print(endDate)
-        weeDays = findAllDays(startDate, endDate, wee)
-        for day in weeDays:
-            if day.week_day == 'Sunday':
-                day, created = Day.objects.update_or_create(date = day.date, week_day='Sunday', location=wee, location__tips__id = tip.id,
-                defaults={'cash_tips': tip.wee_sunday_cash_tips, 'cred_tips': tip.wee_sunday_cred_tips},
-                )
-            elif day.week_day == 'Monday':
-                day, created = Day.objects.update_or_create(date = day.date, week_day='Monday', location=wee, location__tips__id = tip.id,
-                defaults={'cash_tips': tip.wee_monday_cash_tips, 'cred_tips': tip.wee_monday_cred_tips}
-                )
+        weeDays = findAllDays(startDate, endDate, wee, tip)
+        # for day in weeDays:
+        #     if day.week_day == 'Sunday':
+        #         day, created = Day.objects.update_or_create(date = day.date, week_day='Sunday', location=wee, location__tips__id = tip.id,
+        #         defaults={'cash_tips': tip.wee_sunday_cash_tips, 'cred_tips': tip.wee_sunday_cred_tips},
+        #         )
+        #     elif day.week_day == 'Monday':
+        #         day, created = Day.objects.update_or_create(date = day.date, week_day='Monday', location=wee, location__tips__id = tip.id,
+        #         defaults={'cash_tips': tip.wee_monday_cash_tips, 'cred_tips': tip.wee_monday_cred_tips}
+        #         )
                 
-            # elif day.week_day = 'Tuesday':
-            #     day, created = Day.objects.update_or_create(date = day.date, week_day='Tuesday', location_id__tip_id=tip,
-            #     defaults={'cash_tips': tip.wee_tuesday_cash_tips, 'cred_tips': tip.wee_tuesday_cred_tips},
-            #     )
-        west7Days = findAllDays(startDate, endDate, west7)
-        for day in west7Days:
-            if day.week_day == 'Monday':
-                day, created = Day.objects.update_or_create(date = day.date, week_day='Monday', location=west7, location__tips__id = tip.id,
-                defaults={'cash_tips': tip.west7_monday_cash_tips, 'cred_tips': tip.west7_monday_cred_tips}
-                )
+        #     # elif day.week_day = 'Tuesday':
+        #     #     day, created = Day.objects.update_or_create(date = day.date, week_day='Tuesday', location_id__tip_id=tip,
+        #     #     defaults={'cash_tips': tip.wee_tuesday_cash_tips, 'cred_tips': tip.wee_tuesday_cred_tips},
+        #     #     )
+        west7Days = findAllDays(startDate, endDate, west7, tip)
+        # for day in west7Days:
+        #     if day.week_day == 'Monday':
+        #         day, created = Day.objects.update_or_create(date = day.date, week_day='Monday', location=west7, location__tips__id = tip.id,
+        #         defaults={'cash_tips': tip.west7_monday_cash_tips, 'cred_tips': tip.west7_monday_cred_tips}
+        #         )
                 
         days = {'weeDays': weeDays, 'west7Days': west7Days}
         startMonth = (startDate.strftime('%b'))
@@ -297,16 +298,79 @@ def details(request, id):
     west7Sat = next(day for day in west7Days if day.week_day == 'Saturday')
     west7Sun = next(day for day in west7Days if day.week_day == 'Sunday')
     weeEmployees = locations[0].employees.all()
+    wee_days = [ weeFri, weeSat, weeSun, weeMon, weeTue, weeWed, weeThu]
+    west7_days = [ west7Fri, west7Sat, west7Sun, west7Mon, west7Tue, west7Wed, west7Thu]
+    weeEmps = []
+    for emp in weeEmployees:
+        e = EmployeeWeekShift()
+        e.name = emp.first_name + ' , ' + emp.last_name
+        hoursDict = {}
+        cashTipsDict = {}
+        for day in wee_days:
+            if emp.shift_set.filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery') ).filter(day__location__location= 'Wee Claddagh' ).exclude(employee__first_name = 'Anna', role = 'Bakery').filter(day__date = day.date).exists():
+                shifts = emp.shift_set.filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery') ).filter(day__location__location= 'Wee Claddagh' ).exclude(employee__first_name = 'Anna', role = 'Bakery').filter(day__date = day.date)
+                totalTippableHours = 0
+                for shift in shifts:
+                    totalTippableHours += shift.hours
+                hoursDict[day.week_day] = totalTippableHours
+                
+            else:
+                totalTippableHours = 0
+                hoursDict[day.week_day] = totalTippableHours
+                # cashTipsDict[day.week_day] = 0
+            cashtips = day.cash_tips_per_hour
+            cashTipsDict[day.week_day] = cashtips
+        e.mon_hours = hoursDict['Monday']
+        e.mon_cash_tips = cashTipsDict['Monday'] * hoursDict['Monday']
+        e.tue_hours = hoursDict['Tuesday']
+        e.wed_hours = hoursDict['Wednesday']
+        e.thu_hours = hoursDict['Thursday']
+        e.fri_hours = hoursDict['Friday']
+        e.sat_hours = hoursDict['Saturday']
+        e.sun_hours = hoursDict['Sunday']
+        weeEmps.append(e)
+
     west7Employees = locations[1].employees.all()
+    west7Emps = []
+    for emp in west7Employees:
+        e = EmployeeWeekShift()
+        e.name = emp.first_name + ' , ' + emp.last_name
+        hoursDict = {}
+        cashTipsDict = {}
+        for day in west7_days:
+            if emp.shift_set.filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery') ).filter(day__location__location= 'Claddagh Coffee' ).exclude(employee__first_name = 'Anna', role = 'Bakery').filter(day__date = day.date).exists():
+                shifts = emp.shift_set.filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery') ).filter(day__location__location= 'Claddagh Coffee' ).exclude(employee__first_name = 'Anna', role = 'Bakery').filter(day__date = day.date)
+                totalTippableHours = 0
+                for shift in shifts:
+                    totalTippableHours += shift.hours
+                hoursDict[day.week_day] = totalTippableHours
+                
+            else:
+                totalTippableHours = 0
+                hoursDict[day.week_day] = totalTippableHours
+                # cashTipsDict[day.week_day] = 0
+            cashtips = day.cash_tips_per_hour
+            cashTipsDict[day.week_day] = cashtips
+        e.mon_hours = hoursDict['Monday']
+        e.mon_cash_tips = cashTipsDict['Monday'] * hoursDict['Monday']
+        e.tue_hours = hoursDict['Tuesday']
+        e.wed_hours = hoursDict['Wednesday']
+        e.thu_hours = hoursDict['Thursday']
+        e.fri_hours = hoursDict['Friday']
+        e.sat_hours = hoursDict['Saturday']
+        e.sun_hours = hoursDict['Sunday']
+        west7Emps.append(e)
     # Shift.objects.filter(day__location__tips__id = id)
 	# 						shifts = e.shift_set.filter(day__week_day= weekDay ).filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery') ).filter(day__location__location= location )
     context = {
         'tip': tip,
+        'weeEmps': weeEmps,
+        'west7Emps': west7Emps,
         'weeEmployees': weeEmployees,
         'west7Employees': west7Employees,
         'locations': locations,
-        'weeDays': weeDays,
-        'west7Days': west7Days,
+        'weeDays': wee_days,
+        'west7Days': west7_days,
         'weeMon' : weeMon,
         'weeTue' : weeTue,
         'weeWed' : weeWed,
