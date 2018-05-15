@@ -105,34 +105,34 @@
 				{% for employee in west7Emps %}
 				<tr>
 					<td class="col-md-4">{{employee.name}}</td>
+					<td>{{employee.fri_hours}}</td>
+					<td>{{employee.fri_cash_tips}}</td>
+					<td>{{employee.fri_cred_tips}}</td>
+					<td>{{employee.fri_total_tips}}</td>
+					<td>{{employee.sat_hours}}</td>
+					<td>{{employee.sat_cash_tips}}</td>
+					<td>{{employee.sat_cred_tips}}</td>
+					<td>{{employee.sat_total_tips}}</td>
+					<td>{{employee.sun_hours}} </td>
+					<td>{{employee.sun_cash_tips}}</td>
+					<td>{{employee.sun_cred_tips}}</td>
+					<td>{{employee.sun_total_tips}}</td>
 					<td>{{employee.mon_hours}}</td>
 					<td>{{employee.mon_cash_tips}}</td>
 					<td>{{employee.mon_cred_tips}}</td>
 					<td>{{employee.mon_total_tips}}</td>
 					<td>{{employee.tue_hours}}</td>
-					<td>15</td>
-					<td>16</td>
-					<td>17</td>
+					<td>{{employee.tue_cash_tips}}</td>
+					<td>{{employee.tue_cred_tips}}</td>
+					<td>{{employee.tue_total_tips}}</td>
 					<td>{{employee.wed_hours}}</td>
-					<td>19</td>
-					<td>20</td>
-					<td>21</td>
+					<td>{{employee.wed_cash_tips}}</td>
+					<td>{{employee.wed_cred_tips}}</td>
+					<td>{{employee.wed_total_tips}}</td>
 					<td>{{employee.thu_hours}}</td>
-					<td>23</td>
-					<td>24</td>
-					<td>25</td>
-					<td>{{employee.fri_hours}}</td>
-					<td>27</td>
-					<td>28</td>
-					<td>29</td>
-					<td>{{employee.sat_hours}}</td>
-					<td>31</td>
-					<td>32</td>
-					<td>33</td>
-					<td>{{employee.sun_hours}} </td>
-					<td>3</td>
-					<td>4</td>
-					<td>5</td>
+					<td>{{employee.thu_cash_tips}}</td>
+					<td>{{employee.thu_cred_tips}}</td>
+					<td>{{employee.thu_total_tips}}</td>
 					<td>{{employee.wee_total_hours}}</td>
 					<td>11</td>
 					<td>12</td>
@@ -140,58 +140,7 @@
 				</tr> 
 				{% endfor %}
 
-				 {% comment %} {% for employee in west7Employees %}
-				<tr>
-					<td class="col-md-4">{{employee.first_name}}, {{employee.last_name}}</td>
-					{% for day in west7Days %}
-					{% if employee.shift_set.filter(Q(role='Barista/Server')|Q(role='Shift Lead/MOD')|Q(role='Bakery')).filter(day__location__location='Wee Claddagh').exclude(employee__first_name='Anna', role='Bakery').filter(day__date=day.date).exists() %}
-						<td>{{employee.shift_set.filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery') ).filter(day__location__location= 'Wee Claddagh' ).exclude(employee__first_name = 'Anna', role = 'Bakery').filter(day__date = day.date)[0].hours}}</td>
-						<td>23</td>
-						<td>24</td>
-						<td>25</td>
-					{% else %}
-						<td></td>
-						<td>23</td>
-						<td>24</td>
-						<td>25</td>
-					{% endif %}
-					{% endfor %} 
-					
-
-					<td>{{employee.west7_fri_hours}}</td>
-					<td>23</td>
-					<td>24</td>
-					<td>25</td>
-					<td>{{employee.west7_sat_hours}}</td>
-					<td>27</td>
-					<td>28</td>
-					<td>29</td>
-					<td>{{employee.west7_sun_hours}} </td>
-					<td>3</td>
-					<td>4</td>
-					<td>5</td>
-					<td>{{employee.west7_mon_hours}}</td>
-					<td>7</td>
-					<td>8</td>
-					<td>9</td>
-					<td>{{employee.west7_tue_hours}}</td>
-					<td>11</td>
-					<td>12</td>
-					<td>13</td>
-					<td>{{employee.west7_wed_hours}}</td>
-					<td>15</td>
-					<td>16</td>
-					<td>17</td>
-					<td>{{employee.west7_thu_hours}}</td>
-					<td>19</td>
-					<td>20</td>
-					<td>21</td>
-					<td>{{employee.west7_total_hours}}</td>
-					<td>31</td>
-					<td>32</td>
-					<td>33</td>
-				</tr> 
-				{% endfor %} {% endcomment %}
+				
 				<tr>
 					<td>Total</td>
 					{% for day in west7Days %}
