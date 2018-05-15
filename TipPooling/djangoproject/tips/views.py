@@ -263,6 +263,17 @@ class EmployeeWeekShift:
         total_cash_tips = 0
         total_cred_tips = 0
         
+def fillDaysList(daysDict, locationDays):
+    days = daysDict[locationDays]
+    mon = next(day for day in days if day.week_day == 'Monday')
+    tue = next(day for day in days if day.week_day == 'Tuesday')
+    wed = next(day for day in days if day.week_day == 'Wednesday')
+    thu = next(day for day in days if day.week_day == 'Thursday')
+    fri = next(day for day in days if day.week_day == 'Friday')
+    sat = next(day for day in days if day.week_day == 'Saturday')
+    sun = next(day for day in days if day.week_day == 'Sunday')
+    location_days = [ fri, sat, sun, mon, tue, wed, thu]
+    return location_days
         
 def getTipsForEmployees(location, daysList, locationName):
     locationEmployees = location.employees.all()
@@ -329,66 +340,12 @@ def details(request, id):
     print(locations)
     # allDays = Day.objects.all()
     # allDays = allDays.annotate(total_hours)
-    days = parseHoursFile(tip, wee, west7)
-    weeDays = days['weeDays']
-    # weeDays = weeDays.annotate(total_hours=Sum('shift__hours'))
-    weeMon = next(day for day in weeDays if day.week_day == 'Monday')
-    # print(weeMon.total_hours)
-    weeTue = next(day for day in weeDays if day.week_day == 'Tuesday')
-    weeWed = next(day for day in weeDays if day.week_day == 'Wednesday')
-    weeThu = next(day for day in weeDays if day.week_day == 'Thursday')
-    weeFri = next(day for day in weeDays if day.week_day == 'Friday')
-    weeSat = next(day for day in weeDays if day.week_day == 'Saturday')
-    weeSun = next(day for day in weeDays if day.week_day == 'Sunday')
-    west7Days = days['west7Days']
-    west7Mon = next(day for day in west7Days if day.week_day == 'Monday')
-    west7Tue = next(day for day in west7Days if day.week_day == 'Tuesday')
-    west7Wed = next(day for day in west7Days if day.week_day == 'Wednesday')
-    west7Thu = next(day for day in west7Days if day.week_day == 'Thursday')
-    west7Fri = next(day for day in west7Days if day.week_day == 'Friday')
-    west7Sat = next(day for day in west7Days if day.week_day == 'Saturday')
-    west7Sun = next(day for day in west7Days if day.week_day == 'Sunday')
-    # weeEmployees = locations[0].employees.all()
     
-    wee_days = [ weeFri, weeSat, weeSun, weeMon, weeTue, weeWed, weeThu]
-    west7_days = [ west7Fri, west7Sat, west7Sun, west7Mon, west7Tue, west7Wed, west7Thu]
+    days = parseHoursFile(tip, wee, west7)
+    wee_days = fillDaysList(days, 'weeDays')
+    west7_days = fillDaysList(days, 'west7Days')
 
     weeEmps = getTipsForEmployees(wee, wee_days, 'Wee Claddagh')
-
-    # weeEmployees = wee.employees.all()
-    # weeEmps = []
-    # for emp in weeEmployees:
-    #     e = EmployeeWeekShift()
-    #     e.name = emp.first_name + ' , ' + emp.last_name
-    #     hoursDict = {}
-    #     cashTipsDict = {}
-    #     credTipsDict = {}
-    #     for day in wee_days:
-    #         if emp.shift_set.filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery') ).filter(day__location__location= 'Wee Claddagh' ).exclude(employee__first_name = 'Anna', role = 'Bakery').filter(day__date = day.date).exists():
-    #             shifts = emp.shift_set.filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery') ).filter(day__location__location= 'Wee Claddagh' ).exclude(employee__first_name = 'Anna', role = 'Bakery').filter(day__date = day.date)
-    #             totalTippableHours = 0
-    #             for shift in shifts:
-    #                 totalTippableHours += shift.hours
-    #             hoursDict[day.week_day] = totalTippableHours
-                
-    #         else:
-    #             totalTippableHours = 0
-    #             hoursDict[day.week_day] = totalTippableHours
-    #             # cashTipsDict[day.week_day] = 0
-            
-    #         cashTipsDict[day.week_day] = day.cash_tips_per_hour
-    #         credTipsDict[day.week_day] = day.cred_tips_per_hour
-    #     e.mon_hours = hoursDict['Monday']
-    #     e.mon_cash_tips = cashTipsDict['Monday'] * hoursDict['Monday']
-    #     e.mon_cred_tips = credTipsDict['Monday'] * hoursDict['Monday']
-    #     e.tue_hours = hoursDict['Tuesday']
-    #     e.wed_hours = hoursDict['Wednesday']
-    #     e.thu_hours = hoursDict['Thursday']
-    #     e.fri_hours = hoursDict['Friday']
-    #     e.sat_hours = hoursDict['Saturday']
-    #     e.sun_hours = hoursDict['Sunday']
-    #     weeEmps.append(e)
-
     west7Emps = getTipsForEmployees(west7, west7_days, 'Claddagh Coffee')
 
     context = {
@@ -400,20 +357,6 @@ def details(request, id):
         'locations': locations,
         'weeDays': wee_days,
         'west7Days': west7_days,
-        'weeMon' : weeMon,
-        'weeTue' : weeTue,
-        'weeWed' : weeWed,
-        'weeThu' : weeThu,
-        'weeFri' : weeFri,
-        'weeSat' : weeSat,
-        'weeSun' : weeSun,
-        'west7Mon' : west7Mon,
-        'west7Tue' : west7Tue,
-        'west7Wed' : west7Wed,
-        'west7Thu' : west7Thu,
-        'west7Fri' : west7Fri,
-        'west7Sat' : west7Sat,
-        'west7Sun' : west7Sun
     }
     return render(request, 'tips/details.html', context)
 
