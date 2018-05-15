@@ -166,15 +166,21 @@ class Day(models.Model):
     def total_hours(self):
         return self.shift_set.filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery')).exclude(employee__first_name = 'Anna', role = 'Bakery').aggregate(Sum('hours'))['hours__sum']
 
+    @property
     def cash_tips_per_hour(self):
         total_hours = self.shift_set.filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery')).exclude(employee__first_name = 'Anna', role = 'Bakery').aggregate(Sum('hours'))['hours__sum']
         tips = (self.cash_tips / total_hours)
+        # self.cash_tips_per_hour = tips
+        # self.ctph = tips
         return tips
 
+    @property
     def cred_tips_per_hour(self):
         total_hours = self.shift_set.filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery')).exclude(employee__first_name = 'Anna', role = 'Bakery').aggregate(Sum('hours'))['hours__sum']
-        return (self.cred_tips / total_hours)
+        tips = (self.cred_tips / total_hours)
+        return tips
 
+    @property
     def total_tips_per_hour(self):
         total_tips = self.cash_tips + self.cred_tips
         total_hours = self.shift_set.filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery')).exclude(employee__first_name = 'Anna', role = 'Bakery').aggregate(Sum('hours'))['hours__sum']

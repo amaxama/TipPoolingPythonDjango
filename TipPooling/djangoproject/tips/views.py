@@ -141,11 +141,6 @@ def parseHoursFile(tip, wee, west7):
         #     #     defaults={'cash_tips': tip.wee_tuesday_cash_tips, 'cred_tips': tip.wee_tuesday_cred_tips},
         #     #     )
         west7Days = findAllDays(startDate, endDate, west7, tip)
-        # for day in west7Days:
-        #     if day.week_day == 'Monday':
-        #         day, created = Day.objects.update_or_create(date = day.date, week_day='Monday', location=west7, location__tips__id = tip.id,
-        #         defaults={'cash_tips': tip.west7_monday_cash_tips, 'cred_tips': tip.west7_monday_cred_tips}
-        #         )
                 
         days = {'weeDays': weeDays, 'west7Days': west7Days}
         startMonth = (startDate.strftime('%b'))
@@ -269,6 +264,42 @@ class EmployeeWeekShift:
         total_cred_tips = 0
         
         
+# def fillEmployees(location, daysList, ):
+#     west7Employees = west7.employees.all()
+#     west7Emps = []
+#     for emp in west7Employees:
+#         e = EmployeeWeekShift()
+#         e.name = emp.first_name + ' , ' + emp.last_name
+#         hoursDict = {}
+#         cashTipsDict = {}
+#         credTipsDict = {}
+#         totTipsDict = {}
+#         for day in west7_days:
+#             if emp.shift_set.filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery') ).filter(day__location__location= 'Claddagh Coffee' ).exclude(employee__first_name = 'Anna', role = 'Bakery').filter(day__date = day.date).exists():
+#                 shifts = emp.shift_set.filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery') ).filter(day__location__location= 'Claddagh Coffee' ).exclude(employee__first_name = 'Anna', role = 'Bakery').filter(day__date = day.date)
+#                 totalTippableHours = 0
+#                 for shift in shifts:
+#                     totalTippableHours += shift.hours
+#                 hoursDict[day.week_day] = totalTippableHours
+                
+#             else:
+#                 totalTippableHours = 0
+#                 hoursDict[day.week_day] = totalTippableHours
+#             cashTipsDict[day.week_day] = day.cash_tips_per_hour
+#             credTipsDict[day.week_day] = day.cred_tips_per_hour
+#             totTipsDict[day.week_day] = day.total_tips_per_hour
+#         e.mon_hours = hoursDict['Monday']
+# # DOES ACCESSING THIS DICTIONARY TAKE MORE MEMORY?? SHOULD I BE DOING e.mon_hours INSTEAD???
+#         e.mon_cash_tips = cashTipsDict['Monday'] * hoursDict['Monday']
+#         e.mon_cred_tips = credTipsDict['Monday'] * hoursDict['Monday']
+#         e.mon_total_tips = totTipsDict['Monday'] * hoursDict['Monday']
+#         e.tue_hours = hoursDict['Tuesday']
+#         e.wed_hours = hoursDict['Wednesday']
+#         e.thu_hours = hoursDict['Thursday']
+#         e.fri_hours = hoursDict['Friday']
+#         e.sat_hours = hoursDict['Saturday']
+#         e.sun_hours = hoursDict['Sunday']
+#         west7Emps.append(e)
 
 def details(request, id):
     tip = Tip.objects.get(id=id)
@@ -276,6 +307,7 @@ def details(request, id):
     west7, west7created = Location.objects.get_or_create(location='Claddagh Coffee')
     tip.location_set.add(wee, west7)
     locations = tip.location_set.all()
+    print(locations)
     # allDays = Day.objects.all()
     # allDays = allDays.annotate(total_hours)
     days = parseHoursFile(tip, wee, west7)
@@ -297,7 +329,8 @@ def details(request, id):
     west7Fri = next(day for day in west7Days if day.week_day == 'Friday')
     west7Sat = next(day for day in west7Days if day.week_day == 'Saturday')
     west7Sun = next(day for day in west7Days if day.week_day == 'Sunday')
-    weeEmployees = locations[0].employees.all()
+    # weeEmployees = locations[0].employees.all()
+    weeEmployees = wee.employees.all()
     wee_days = [ weeFri, weeSat, weeSun, weeMon, weeTue, weeWed, weeThu]
     west7_days = [ west7Fri, west7Sat, west7Sun, west7Mon, west7Tue, west7Wed, west7Thu]
     weeEmps = []
@@ -306,6 +339,7 @@ def details(request, id):
         e.name = emp.first_name + ' , ' + emp.last_name
         hoursDict = {}
         cashTipsDict = {}
+        credTipsDict = {}
         for day in wee_days:
             if emp.shift_set.filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery') ).filter(day__location__location= 'Wee Claddagh' ).exclude(employee__first_name = 'Anna', role = 'Bakery').filter(day__date = day.date).exists():
                 shifts = emp.shift_set.filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery') ).filter(day__location__location= 'Wee Claddagh' ).exclude(employee__first_name = 'Anna', role = 'Bakery').filter(day__date = day.date)
@@ -318,10 +352,12 @@ def details(request, id):
                 totalTippableHours = 0
                 hoursDict[day.week_day] = totalTippableHours
                 # cashTipsDict[day.week_day] = 0
-            cashtips = day.cash_tips_per_hour
-            cashTipsDict[day.week_day] = cashtips
+            
+            cashTipsDict[day.week_day] = day.cash_tips_per_hour
+            credTipsDict[day.week_day] = day.cred_tips_per_hour
         e.mon_hours = hoursDict['Monday']
         e.mon_cash_tips = cashTipsDict['Monday'] * hoursDict['Monday']
+        e.mon_cred_tips = credTipsDict['Monday'] * hoursDict['Monday']
         e.tue_hours = hoursDict['Tuesday']
         e.wed_hours = hoursDict['Wednesday']
         e.thu_hours = hoursDict['Thursday']
@@ -330,13 +366,16 @@ def details(request, id):
         e.sun_hours = hoursDict['Sunday']
         weeEmps.append(e)
 
-    west7Employees = locations[1].employees.all()
+    # west7Employees = locations[1].employees.all()
+    west7Employees = west7.employees.all()
     west7Emps = []
     for emp in west7Employees:
         e = EmployeeWeekShift()
         e.name = emp.first_name + ' , ' + emp.last_name
         hoursDict = {}
         cashTipsDict = {}
+        credTipsDict = {}
+        totTipsDict = {}
         for day in west7_days:
             if emp.shift_set.filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery') ).filter(day__location__location= 'Claddagh Coffee' ).exclude(employee__first_name = 'Anna', role = 'Bakery').filter(day__date = day.date).exists():
                 shifts = emp.shift_set.filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery') ).filter(day__location__location= 'Claddagh Coffee' ).exclude(employee__first_name = 'Anna', role = 'Bakery').filter(day__date = day.date)
@@ -348,11 +387,14 @@ def details(request, id):
             else:
                 totalTippableHours = 0
                 hoursDict[day.week_day] = totalTippableHours
-                # cashTipsDict[day.week_day] = 0
-            cashtips = day.cash_tips_per_hour
-            cashTipsDict[day.week_day] = cashtips
+            cashTipsDict[day.week_day] = day.cash_tips_per_hour
+            credTipsDict[day.week_day] = day.cred_tips_per_hour
+            totTipsDict[day.week_day] = day.total_tips_per_hour
         e.mon_hours = hoursDict['Monday']
+# DOES ACCESSING THIS DICTIONARY TAKE MORE MEMORY?? SHOULD I BE DOING e.mon_hours INSTEAD???
         e.mon_cash_tips = cashTipsDict['Monday'] * hoursDict['Monday']
+        e.mon_cred_tips = credTipsDict['Monday'] * hoursDict['Monday']
+        e.mon_total_tips = totTipsDict['Monday'] * hoursDict['Monday']
         e.tue_hours = hoursDict['Tuesday']
         e.wed_hours = hoursDict['Wednesday']
         e.thu_hours = hoursDict['Thursday']
@@ -360,8 +402,6 @@ def details(request, id):
         e.sat_hours = hoursDict['Saturday']
         e.sun_hours = hoursDict['Sunday']
         west7Emps.append(e)
-    # Shift.objects.filter(day__location__tips__id = id)
-	# 						shifts = e.shift_set.filter(day__week_day= weekDay ).filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery') ).filter(day__location__location= location )
     context = {
         'tip': tip,
         'weeEmps': weeEmps,

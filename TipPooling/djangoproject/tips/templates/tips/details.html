@@ -107,8 +107,8 @@
 					<td class="col-md-4">{{employee.name}}</td>
 					<td>{{employee.mon_hours}}</td>
 					<td>{{employee.mon_cash_tips}}</td>
-					<td>8</td>
-					<td>9</td>
+					<td>{{employee.mon_cred_tips}}</td>
+					<td>{{employee.mon_total_tips}}</td>
 					<td>{{employee.tue_hours}}</td>
 					<td>15</td>
 					<td>16</td>
@@ -382,7 +382,7 @@
 				</tr>
 				<tr>
 					<td>Cash tips/hour</td>
-					{% for day in weeDays %}
+					{% for day in west7Days %}
 					<td></td>
 					<td></td>
 					<td></td>
@@ -395,7 +395,7 @@
 				</tr>
 				<tr>
 					<td>Credit card tips/hour</td>
-					{% for day in weeDays %}
+					{% for day in west7Days %}
 					<td></td>
 					<td></td>
 					<td></td>
