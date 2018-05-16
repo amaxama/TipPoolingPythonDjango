@@ -230,7 +230,7 @@ def parseHoursFile(tip, wee, west7):
 class EmployeeWeekShift:
     """ EmployeeWeekShift class represents employee data for a week(name, hours for each day, tips for each day, total hours, total tips) """
     def __init__(self):
-        name = ""
+        name = ''
         mon_hours = 0
         mon_cash_tips = 0
         mon_cred_tips = 0
@@ -262,7 +262,31 @@ class EmployeeWeekShift:
         total_hours = 0
         total_cash_tips = 0
         total_cred_tips = 0
+        total_tips_wo_MT = 0
+        total_tips_w_MT = 0
         
+class LocationWeek:
+    """ LocationWeek class represents location data for a week(name, days, employees, total hours, total tip amounts) """
+    def __init__(self):
+        name = ''
+        days = []
+        employees = []
+        total_hours_w_MT = 0
+        cash_tips_w_MT = 0
+        cred_tips_w_MT = 0
+        total_tips_w_MT = 0
+        total_hours_wo_MT = 0
+        cash_tips_wo_MT = 0
+        cred_tips_wo_MT = 0
+        total_tips_wo_MT = 0
+        cash_tips_per_hour = 0
+        cred_tips_per_hour = 0
+        total_tips_per_hour = 0
+        MT = 0
+        MT_per_employee = 0
+
+
+
 def fillDaysList(daysDict, locationDays):
     days = daysDict[locationDays]
     mon = next(day for day in days if day.week_day == 'Monday')
@@ -280,7 +304,7 @@ def getTipsForEmployees(location, daysList, locationName):
     locEmps = []
     for emp in locationEmployees:
         e = EmployeeWeekShift()
-        e.name = emp.first_name + ' , ' + emp.last_name
+        e.name = emp.first_name + ' ' + emp.last_name
         hoursDict = {}
         cashTipsDict = {}
         credTipsDict = {}
@@ -328,6 +352,10 @@ def getTipsForEmployees(location, daysList, locationName):
         e.sun_cash_tips = cashTipsDict['Sunday'] * e.sun_hours
         e.sun_cred_tips = credTipsDict['Sunday'] * e.sun_hours
         e.sun_total_tips = totTipsDict['Sunday'] * e.sun_hours
+        e.total_hours = e.mon_hours + e.tue_hours + e.wed_hours + e.thu_hours + e.fri_hours + e.sat_hours + e.sun_hours
+        e.total_cash_tips = e.mon_cash_tips + e.tue_cash_tips + e.wed_cash_tips + e.thu_cash_tips + e.fri_cash_tips + e.sat_cash_tips + e.sun_cash_tips
+        e.total_cred_tips = e.mon_cred_tips + e.tue_cred_tips + e.wed_cred_tips + e.thu_cred_tips + e.fri_cred_tips + e.sat_cred_tips + e.sun_cred_tips
+        e.total_tips_wo_MT = e.total_cash_tips + e.total_cred_tips
         locEmps.append(e)
     return locEmps
 
@@ -337,16 +365,69 @@ def details(request, id):
     west7, west7created = Location.objects.get_or_create(location='Claddagh Coffee')
     tip.location_set.add(wee, west7)
     locations = tip.location_set.all()
-    print(locations)
     # allDays = Day.objects.all()
     # allDays = allDays.annotate(total_hours)
     
     days = parseHoursFile(tip, wee, west7)
+
     wee_days = fillDaysList(days, 'weeDays')
     west7_days = fillDaysList(days, 'west7Days')
 
     weeEmps = getTipsForEmployees(wee, wee_days, 'Wee Claddagh')
     west7Emps = getTipsForEmployees(west7, west7_days, 'Claddagh Coffee')
+
+    weeWeek = LocationWeek()
+    weeWeek.name = 'Wee Claddagh'
+    weeWeek.days = wee_days
+    weeWeek.employees = weeEmps
+    weeWeek.total_hours_w_MT = 0
+    weeWeek.cash_tips_w_MT = 0
+    weeWeek.cred_tips_w_MT = 0
+    weeWeek.total_tips_w_MT = 0
+    weeWeek.total_hours_wo_MT = 0
+    weeWeek.cash_tips_wo_MT = 0
+    weeWeek.cred_tips_wo_MT = 0
+    weeWeek.total_tips_wo_MT = 0
+    for e in weeEmps:
+        if e.name != 'Mary Bard':
+            weeWeek.total_hours_wo_MT += e.total_hours
+            weeWeek.cash_tips_wo_MT += e.total_cash_tips
+            weeWeek.cred_tips_wo_MT += e.total_cred_tips
+            weeWeek.total_tips_wo_MT += e.total_tips_wo_MT
+        else:
+            weeWeek.MT = e.total_tips_wo_MT
+    weeWeek.MT_per_employee = weeWeek.MT / weeWeek.total_hours_wo_MT
+
+    for e in weeEmps:
+        weeWeek.total_hours_w_MT += e.total_hours
+        weeWeek.cash_tips_w_MT += e.total_cash_tips
+        weeWeek.cred_tips_w_MT += e.total_cred_tips
+        weeWeek.total_tips_w_MT += e.total_tips_wo_MT
+        e.total_tips_w_MT = weeWeek.MT_per_employee * e.total_hours + e.total_tips_wo_MT
+        print(e.name)
+        print(e.total_tips_wo_MT)
+        print(e.total_tips_w_MT)
+    
+    weeWeek.cash_tips_per_hour = weeWeek.cash_tips_w_MT / weeWeek.total_hours_w_MT
+    weeWeek.cred_tips_per_hour = weeWeek.cred_tips_w_MT / weeWeek.total_hours_w_MT
+    weeWeek.total_tips_per_hour = weeWeek.total_tips_w_MT / weeWeek.total_hours_w_MT
+    
+    print (weeWeek.total_hours_w_MT)
+    print (weeWeek.cash_tips_w_MT)
+    print (weeWeek.cred_tips_w_MT)
+    print (weeWeek.total_tips_w_MT)
+    print (weeWeek.total_hours_wo_MT)
+    print (weeWeek.cash_tips_wo_MT)
+    print (weeWeek.cred_tips_wo_MT)
+    print (weeWeek.total_tips_wo_MT)
+    print (weeWeek.cash_tips_per_hour)
+    print (weeWeek.cred_tips_per_hour)
+    print (weeWeek.total_tips_per_hour)
+    print (weeWeek.MT)
+    print (weeWeek.total_hours_wo_MT)
+    print (weeWeek.MT_per_employee)
+
+
 
     context = {
         'tip': tip,
@@ -357,6 +438,7 @@ def details(request, id):
         'locations': locations,
         'weeDays': wee_days,
         'west7Days': west7_days,
+        'location': weeWeek
     }
     return render(request, 'tips/details.html', context)
 
