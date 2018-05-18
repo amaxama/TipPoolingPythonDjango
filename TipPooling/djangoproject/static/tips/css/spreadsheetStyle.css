@@ -1,7 +1,226 @@
+:root  { 
+	/* --teal: #619B8A;
+	--orange: #FF9249;
+	--yellow: #FCCA46;
+	--seafoam: #A1C181;
+	--navy: #233D4D; */
+	/* --pop: rgba(132, 88, 66, 1);
+	--white: rgba(255, 255, 255, 1);
+	--light: rgba(229, 229, 206, 1);
+	--med: rgba(137, 153, 122, 1);
+	--dark: rgba(30, 43, 51, 1); */
+
+		--light:rgba(184, 216, 216, 1);
+		--med: rgba(122, 158, 159, 1);
+		--dark: rgba(79, 99, 103, 1);
+		/* --white: rgba(238, 245, 219, 1); */
+		--white: #85897A;
+		--pop: rgba(254, 95, 85, 1);
+	}
+
+
+
 h1 {
-    color: green;
+    color: var(--med);
 }
 
-table {
+/* table {
     white-space: nowrap;
+} */
+
+/* table {
+  overflow-x:scroll;  
+  margin-left:2em;
+    }
+
+.headcol {
+  position:fixed;
+	width:2em;
+	left:0;
+}
+
+table.responsive-table thead {
+  position: fixed;
+  top: 50px;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 50px;
+  line-height: 3em;
+  background: #eee;
+  table-layout: fixed;
+  display: table;
+}
+
+
+
+table.responsive-table td {
+  line-height: 2em;
+}
+
+table.responsive-table tr > td,
+table.responsive-table th {
+  text-align: left;
+} */
+
+
+/* .table > thead:first-child > tr:first-child > th:first-child {
+  position: absolute;
+  display: inline-block;
+  background-color: red;
+  height: 100%;
+}
+
+.table > tbody > tr > td:first-child {
+  position: absolute;
+  display: inline-block;
+  background-color: red;
+  height: 100%;
+}
+
+.table > thead:first-child > tr:first-child > th:nth-child(2) {
+  padding-left: 40px;
+}
+
+.table > tbody > tr > td:nth-child(2) {
+  padding-left: 50px !important;
+} */
+
+
+/* .table-scroll { */
+	/* position:relative;
+	max-width:800px;
+	margin:auto;
+	overflow:hidden;
+	border:1px solid #000;
+}
+.table-wrap {
+	width:100%;
+	overflow:auto;
+}
+.table-scroll table {
+	width:100%;
+	margin:auto;
+	border-collapse:separate;
+	border-spacing:0;
+}
+.table-scroll th, .table-scroll td {
+	padding:5px 10px;
+	border:1px solid #000;
+	background:#fff;
+	white-space:nowrap;
+	vertical-align:top;
+}
+.table-scroll thead, .table-scroll tfoot {
+	background:#f9f9f9;
+}
+
+
+
+.grid-container {
+  display: grid; /* This is a (hacky) way to make the .grid element size to fit its content */
+  /*overflow: auto;
+  height: 300px;
+  width: 600px;
+}
+.grid {
+  display: flex;
+  flex-wrap: nowrap;
+}
+.grid-col {
+  width: 150px;
+  min-width: 150px;
+}
+
+.grid-item--header {
+  height: 100px;
+  min-height: 100px;
+  position: sticky;
+  position: -webkit-sticky;
+  background: white;
+  top: 0;
+}
+
+.grid-col--fixed-left {
+  position: sticky;
+  left: 0;
+  z-index: 9998;
+  background: white;
+}
+.grid-col--fixed-right {
+  position: sticky;
+  right: 0;
+  z-index: 9998;
+  background: white;
+}
+
+.grid-item {
+  height: 50px;
+  border: 1px solid gray;
+} */
+
+
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border-top: 1px solid var(--light);
+}
+
+thead { 
+	position: fixed;
+	background-color: var(--dark);
+	color: var(--white);
+}
+
+td, th {
+  margin: 0;
+  border: 1px solid var(--light);
+  white-space: nowrap;
+	border-top-width: 0px;
+	font: bold 14px/16px Georgia;
+
+}
+
+td {
+	text-align: center;
+	color: var(--dark)
+}
+
+.table-striped {
+	background-color: var(--light);
+}
+
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+	background-color: var(--dark);
+	color: var(--pop);
+}
+
+.my_table {
+	/* width: 500px; */
+	height: 650px;
+  overflow-x: scroll;
+  margin-left: 0em;
+  overflow-y: scroll;
+  padding: 0, 5em;
+}
+
+.headcol {
+  background: var(--med);
+	color: var(--white);
+  font: bold 14px/16px Georgia;
+  margin: 0;
+  position: sticky;
+  width: auto;
+  left: 0;
+  top: auto;
+  border: 2px solid;
+  border-top-width: 1px;
+  /* margin-top: -1px; */
+  /* padding: 2px 2px 2px 2px; */
+}
+
+.headcol:before {
+  content: '';
 }
