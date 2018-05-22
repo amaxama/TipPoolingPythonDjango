@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import FileExtensionValidator
 from django.db.models import Count, Sum, Avg
 from datetime import datetime
 from decimal import Decimal
@@ -17,29 +18,19 @@ def getTotalTippableHoursForLocation(e, weekDay, location ):
         shifts = e.shift_set.filter(day__week_day= weekDay ).filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery') ).filter(day__location__location= location )
         totalTippableHours = 0
         for shift in shifts:
-            # print(shift.day_id.date)
-            # print(shift.day_id.week_day)
-            # print(shift.day_id.location_id.location)
-            # print(shift.hours)
             totalTippableHours += shift.hours
-            # print(totalTippableHours)
         return totalTippableHours
     else:
         shifts = e.shift_set.filter(day__week_day= weekDay ).filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD')).filter(day__location__location= location )
         totalTippableHours = 0
         for shift in shifts:
-            # print(shift.day_id.date)
-            # print(shift.day_id.week_day)
-            # print(shift.day_id.location_id.location)
-            # print(shift.hours)
             totalTippableHours += shift.hours
-            # print(totalTippableHours)
         return totalTippableHours
 
 
 # Create your models here.
 class Tip(models.Model):
-    title = models.CharField(max_length=200)
+    title = models.DateField()
     wee_Sunday_cash_tips = MoneyField(max_digits=6, decimal_places=2, default=Decimal('0000.00'), default_currency='USD')
     wee_Sunday_cred_tips = MoneyField(max_digits=6, decimal_places=2, default=Decimal('0000.00'), default_currency='USD')
     west7_Sunday_cash_tips = MoneyField(max_digits=6, decimal_places=2, default=Decimal('0000.00'), default_currency='USD')
@@ -72,11 +63,14 @@ class Tip(models.Model):
     wee_Sunday_cred_tips = MoneyField(max_digits=6, decimal_places=2, default=Decimal('0000.00'), default_currency='USD')
     west7_Sunday_cash_tips = MoneyField(max_digits=6, decimal_places=2, default=Decimal('0000.00'), default_currency='USD')
     west7_Sunday_cred_tips = MoneyField(max_digits=6, decimal_places=2, default=Decimal('0000.00'), default_currency='USD')
-    created_at = models.DateTimeField(default=datetime.now, blank=True)
-    hours_file = models.FileField(upload_to=getUploadFileName)
+    # created_at = models.DateTimeField(default=datetime.now, blank=True)
+    hours_file = models.FileField(upload_to=getUploadFileName, validators = [FileExtensionValidator(['csv'])])
 
     def __str__(self):
-        return self.title
+        try:
+            return self.title.strftime('%b %d, %Y')
+        except:
+            return "Tip try"
     class Meta:
         verbose_name_plural = "Tips"
 
@@ -87,9 +81,6 @@ class Tip(models.Model):
     def getCredTips(self, location, weekDay):
         credTips = {'Wee Claddagh': {'Sunday': self.wee_Sunday_cred_tips, 'Monday': self.wee_Monday_cred_tips, 'Tuesday': self.wee_Tuesday_cred_tips, 'Wednesday': self.wee_Wednesday_cred_tips, 'Thursday': self.wee_Thursday_cred_tips, 'Friday': self.wee_Friday_cred_tips, 'Saturday': self.wee_Saturday_cred_tips}, 'Claddagh Coffee': {'Sunday': self.west7_Sunday_cred_tips, 'Monday': self.west7_Monday_cred_tips, 'Tuesday': self.west7_Tuesday_cred_tips, 'Wednesday': self.west7_Wednesday_cred_tips, 'Thursday': self.west7_Thursday_cred_tips, 'Friday': self.west7_Friday_cred_tips, 'Saturday': self.west7_Saturday_cred_tips}}
         return credTips[location][weekDay]
-
-# def getCashTips(e, hours, location, weekDay):
-#     e.shift_set(location = location, date=startDate, week_day=weekDay, location__tips__id = tip.id, cash_tips = tip.getCashTips(location.location, startDate.strftime("%A")), cred_tips = tip.getCredTips(location.location, startDate.strftime("%A")))
 
 
 class Employee(models.Model):
@@ -169,22 +160,28 @@ class Day(models.Model):
     @property
     def cash_tips_per_hour(self):
         total_hours = self.shift_set.filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery')).exclude(employee__first_name = 'Anna', role = 'Bakery').aggregate(Sum('hours'))['hours__sum']
-        tips = (self.cash_tips / total_hours)
-        # self.cash_tips_per_hour = tips
-        # self.ctph = tips
-        return tips
+        if total_hours != None:
+            return (self.cash_tips / total_hours)
+        else:
+            return 0
 
     @property
     def cred_tips_per_hour(self):
         total_hours = self.shift_set.filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery')).exclude(employee__first_name = 'Anna', role = 'Bakery').aggregate(Sum('hours'))['hours__sum']
-        tips = (self.cred_tips / total_hours)
-        return tips
+        if total_hours != None:
+            return (self.cred_tips / total_hours)
+        else:
+            return 0
+        
 
     @property
     def total_tips_per_hour(self):
         total_tips = self.cash_tips + self.cred_tips
         total_hours = self.shift_set.filter(Q(role='Barista/Server') | Q(role='Shift Lead/MOD') | Q(role='Bakery')).exclude(employee__first_name = 'Anna', role = 'Bakery').aggregate(Sum('hours'))['hours__sum']
-        return total_tips / total_hours
+        if total_hours != None:
+            return total_tips / total_hours
+        else:
+            return 0
 
 
         

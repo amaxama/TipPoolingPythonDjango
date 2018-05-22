@@ -14,14 +14,105 @@
 		--med: rgba(122, 158, 159, 1);
 		--dark: rgba(79, 99, 103, 1);
 		/* --white: rgba(238, 245, 219, 1); */
-		--white: #85897A;
-		--pop: rgba(254, 95, 85, 1);
+		--white: rgba(219, 165, 15);
+    --pop: rgba(254, 95, 85, 1);
+    
 	}
 
-
+body {
+  background-color: var(--light);
+  text-align: center;
+}
 
 h1 {
-    color: var(--med);
+  color: var(--dark);
+  font-family: "Times New Roman", Times, serif;
+  letter-spacing: 3px;
+  font-size: 64px;
+}
+
+h2 {
+  color: var(--dark);
+  font-family: "Times New Roman", Times, serif;
+  letter-spacing: 2px;
+  font-size: 50px;
+}
+
+.mary-tips {
+  align: right;
+}
+
+table {
+  border-collapse: separate;
+  border-spacing: 0;
+  border-top: 1px solid var(--light);
+}
+
+thead { 
+	/* position: fixed; */
+	background-color: var(--dark);
+	color: var(--white);
+}
+
+td, th {
+  margin: 0;
+  border: 1px solid var(--light);
+  white-space: nowrap;
+	border-top-width: 0px;
+  font: bold 16px/18px Times, serif;
+  letter-spacing: 1px;
+
+}
+
+td {
+	text-align: center;
+	color: var(--dark)
+}
+
+.table-striped {
+	background-color: var(--light);
+}
+
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+	background-color: var(--dark);
+  color: #7A995E;
+  font-size: 20px;
+}
+
+.my_table {
+	/* width: 500px; */
+	height: 650px;
+  overflow-x: scroll;
+  margin-left: 0em;
+  overflow-y: scroll;
+  padding: 0, 5em;
+}
+
+.headcol {
+  background: var(--med);
+	color: white;
+  font: bold 16px/18px Times, serif;
+  letter-spacing: 1px;
+  margin: 0;
+  position: sticky;
+  width: auto;
+  left: 0;
+  top: auto;
+  border: 2px solid;
+  border-top-width: 1px;
+  text-align: left;
+  /* margin-top: -1px; */
+  /* padding: 2px 2px 2px 2px; */
+}
+
+.headcol:before {
+  content: '';
+}
+
+.hours {
+  background-color:  #46a6b4;
+  color: white;
 }
 
 /* table {
@@ -161,66 +252,4 @@ table.responsive-table th {
 
 
 
-table {
-  border-collapse: separate;
-  border-spacing: 0;
-  border-top: 1px solid var(--light);
-}
 
-thead { 
-	position: fixed;
-	background-color: var(--dark);
-	color: var(--white);
-}
-
-td, th {
-  margin: 0;
-  border: 1px solid var(--light);
-  white-space: nowrap;
-	border-top-width: 0px;
-	font: bold 14px/16px Georgia;
-
-}
-
-td {
-	text-align: center;
-	color: var(--dark)
-}
-
-.table-striped {
-	background-color: var(--light);
-}
-
-
-.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
-	background-color: var(--dark);
-	color: var(--pop);
-}
-
-.my_table {
-	/* width: 500px; */
-	height: 650px;
-  overflow-x: scroll;
-  margin-left: 0em;
-  overflow-y: scroll;
-  padding: 0, 5em;
-}
-
-.headcol {
-  background: var(--med);
-	color: var(--white);
-  font: bold 14px/16px Georgia;
-  margin: 0;
-  position: sticky;
-  width: auto;
-  left: 0;
-  top: auto;
-  border: 2px solid;
-  border-top-width: 1px;
-  /* margin-top: -1px; */
-  /* padding: 2px 2px 2px 2px; */
-}
-
-.headcol:before {
-  content: '';
-}

@@ -17,7 +17,7 @@ from datetime import timedelta
 def index(request):
     # return HttpResponse('Hello from tips')
 
-    tips = Tip.objects.all()[:10]
+    tips = Tip.objects.all().order_by('-title')[:10]
     
 
     context = {
@@ -130,23 +130,8 @@ def parseHoursFile(tip, wee, west7):
 
         startDate = datetime.strptime(strStartDate, '%b %d, %Y').date()
         endDate = datetime.strptime(strEndDate, '%b %d, %Y').date()
-        # print(strStartDate)
-        # print(endDate)
+
         weeDays = findAllDays(startDate, endDate, wee, tip)
-        # for day in weeDays:
-        #     if day.week_day == 'Sunday':
-        #         day, created = Day.objects.update_or_create(date = day.date, week_day='Sunday', location=wee, location__tips__id = tip.id,
-        #         defaults={'cash_tips': tip.wee_sunday_cash_tips, 'cred_tips': tip.wee_sunday_cred_tips},
-        #         )
-        #     elif day.week_day == 'Monday':
-        #         day, created = Day.objects.update_or_create(date = day.date, week_day='Monday', location=wee, location__tips__id = tip.id,
-        #         defaults={'cash_tips': tip.wee_monday_cash_tips, 'cred_tips': tip.wee_monday_cred_tips}
-        #         )
-                
-        #     # elif day.week_day = 'Tuesday':
-        #     #     day, created = Day.objects.update_or_create(date = day.date, week_day='Tuesday', location_id__tip_id=tip,
-        #     #     defaults={'cash_tips': tip.wee_tuesday_cash_tips, 'cred_tips': tip.wee_tuesday_cred_tips},
-        #     #     )
         west7Days = findAllDays(startDate, endDate, west7, tip)
                 
         days = {'weeDays': weeDays, 'west7Days': west7Days}
@@ -202,38 +187,6 @@ def parseHoursFile(tip, wee, west7):
     
 
     
-#     private static List<Shift> fillShiftsList(List<String[]> records, String startMonth, String endMonth) throws TPDaoPersistenceException {
-# //            List<String[]> realRecords = records.subList(start, end);
-# //            PrintWriter out;
-# //            String employeeFile;
-# //            try {
-# //                employeeFile = "Hours/2018-03-23/" + realRecords.get(0)[0];
-# //                out = new PrintWriter(new FileWriter(employeeFile));
-# //            } catch (IOException e) {
-# //                throw new TPDaoPersistenceException("Could not write data.", e);
-# //            }
-#             List<Shift> shifts = new ArrayList<>();
-
-#             for ( String[] words : records) {
-# //                String[] words = nextLine.split(DELIM, -1);
-#                 if (words.length > 0) {
-#                     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM d yyyy");
-#                     if (words[0].startsWith(startMonth) || words[0].startsWith(endMonth) ) {
-#                         Shift shift = new Shift();
-#                         LocalDate date = LocalDate.parse(words[0] + " 2018", formatter);
-#                         shift.setDate(date);
-#                         shift.setTimes(words[1]);
-#                         shift.setLocation(words[2]);
-#                         shift.setRole(words[3]);
-#                         shift.setHours(new BigDecimal(words[5]).setScale(2, RoundingMode.HALF_UP));
-#                         shifts.add(shift);
-#                     }
-#                 }
-#             }
-           
-#         return shifts;
-#     }
-
 class EmployeeWeekShift:
     """ EmployeeWeekShift class represents employee data for a week(name, hours for each day, tips for each day, total hours, total tips) """
     def __init__(self):
@@ -363,7 +316,10 @@ def getTipsForEmployees(location, daysList, locationName):
         e.total_cash_tips = e.mon_cash_tips + e.tue_cash_tips + e.wed_cash_tips + e.thu_cash_tips + e.fri_cash_tips + e.sat_cash_tips + e.sun_cash_tips
         e.total_cred_tips = e.mon_cred_tips + e.tue_cred_tips + e.wed_cred_tips + e.thu_cred_tips + e.fri_cred_tips + e.sat_cred_tips + e.sun_cred_tips
         e.total_tips_wo_MT = e.total_cash_tips + e.total_cred_tips
-        locEmps.append(e)
+        if e.total_hours != 0:
+            locEmps.append(e)
+        elif e.name == 'Mary Bard':
+            locEmps.append(e)
     return locEmps
 
 def createLocationWeek(locationName, daysList, employeesList):
@@ -393,8 +349,11 @@ def createLocationWeek(locationName, daysList, employeesList):
         week.total_hours_w_MT += e.total_hours
         week.cash_tips_w_MT += e.total_cash_tips
         week.cred_tips_w_MT += e.total_cred_tips
-        week.total_tips_w_MT += e.total_tips_wo_MT
-        e.total_tips_w_MT = week.MT_per_employee * e.total_hours + e.total_tips_wo_MT
+        if e.name != 'Mary Bard':
+            e.total_tips_w_MT = week.MT_per_employee * e.total_hours + e.total_tips_wo_MT
+        else:
+            e.total_tips_w_MT = e.total_tips_wo_MT * 0
+        week.total_tips_w_MT += e.total_tips_w_MT
     
     week.cash_tips_per_hour = week.cash_tips_w_MT / week.total_hours_w_MT
     week.cred_tips_per_hour = week.cred_tips_w_MT / week.total_hours_w_MT
@@ -425,20 +384,6 @@ def details(request, id):
     west7LocWeek = createLocationWeek('Claddagh Coffee', west7Days, west7Employees)
 
     locations = [west7LocWeek, weeLocWeek]
-    # print (weeWeek.total_hours_w_MT)
-    # print (weeWeek.cash_tips_w_MT)
-    # print (weeWeek.cred_tips_w_MT)
-    # print (weeWeek.total_tips_w_MT)
-    # print (weeWeek.total_hours_wo_MT)
-    # print (weeWeek.cash_tips_wo_MT)
-    # print (weeWeek.cred_tips_wo_MT)
-    # print (weeWeek.total_tips_wo_MT)
-    # print (weeWeek.cash_tips_per_hour)
-    # print (weeWeek.cred_tips_per_hour)
-    # print (weeWeek.total_tips_per_hour)
-    # print (weeWeek.MT)
-    # print (weeWeek.total_hours_wo_MT)
-    # print (weeWeek.MT_per_employee)
 
 
 
